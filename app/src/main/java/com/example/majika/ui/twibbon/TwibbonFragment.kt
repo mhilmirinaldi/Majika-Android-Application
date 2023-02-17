@@ -3,8 +3,9 @@ package com.example.majika.ui.twibbon
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.net.Uri
+import android.graphics.Matrix
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,14 +19,11 @@ import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import com.example.majika.R
 import com.example.majika.databinding.FragmentTwibbonBinding
 import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.OutputStream
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -36,6 +34,7 @@ class TwibbonFragment : Fragment() {
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var imageCapture: ImageCapture
     private lateinit var safeContext: Context
+    private var takePicture = true
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
@@ -65,33 +64,51 @@ class TwibbonFragment : Fragment() {
     }
 
     private fun takePhoto(){
-        val outputStream = ByteArrayOutputStream()
-
-// Create an OutputFileOptions object with the ByteArrayOutputStream
-        val outputFileOptions = ImageCapture.OutputFileOptions.Builder(outputStream).build()
-
-        val imageoutput: ImageView = binding.imageOutput
-        imageCapture.takePicture(outputFileOptions, cameraExecutor,
-            object : ImageCapture.OnImageSavedCallback {
-                override fun onError(error: ImageCaptureException)
-                {
-
-                }
-                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-
-                    activity?.runOnUiThread(java.lang.Runnable {
-                        imageoutput.visibility = View.VISIBLE
-                        val byteArray = outputStream.toByteArray()
-
-                        // Create a Bitmap from the byte array
-                        val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-
-                        // Display the Bitmap in the ImageView
-                        imageoutput.setImageBitmap(bitmap)
-                    })
-
-                }
+        val imageOutput: ImageView = binding.imageOutput
+        val textTakePicture: TextView = binding.textTakePicture
+        if(!takePicture){
+            activity?.runOnUiThread(java.lang.Runnable {
+                imageOutput.visibility = View.GONE
+                imageOutput.setImageBitmap(null)
+                textTakePicture.setText(R.string.on_take)
             })
+            takePicture = true
+            startCamera()
+        }
+        else{
+            val outputStream = ByteArrayOutputStream()
+            // Create an OutputFileOptions object with the ByteArrayOutputStream
+            val outputFileOptions = ImageCapture.OutputFileOptions.Builder(outputStream).build()
+            imageCapture.takePicture(outputFileOptions, cameraExecutor,
+                object : ImageCapture.OnImageSavedCallback {
+                    override fun onError(error: ImageCaptureException)
+                    {
+
+                    }
+                    override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+
+                        activity?.runOnUiThread(java.lang.Runnable {
+                            imageOutput.visibility = View.VISIBLE
+                            textTakePicture.setText(R.string.no_take)
+                            val byteArray = outputStream.toByteArray()
+
+                            // Create a Bitmap from the byte array
+                            val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+
+                            //flip image
+                            val matrix = Matrix()
+                            matrix.preScale(-1f, 1f)
+                            val flipBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+                            // Display the Bitmap in the ImageView
+                            imageOutput.setImageBitmap(flipBitmap)
+
+                        })
+
+                    }
+                })
+            takePicture = false
+            stopCamera()
+        }
     }
 
 
@@ -123,6 +140,18 @@ class TwibbonFragment : Fragment() {
 
     }
 
+    private fun stopCamera(){
+        val processCameraProvider = ProcessCameraProvider.getInstance(safeContext)
+        processCameraProvider.addListener({
+            try{
+                val cameraProvider = processCameraProvider.get()
+                cameraProvider.unbindAll()
+
+            }
+            catch(e: Exception){
+            }
+        }, ContextCompat.getMainExecutor(safeContext))
+    }
 
     private fun startCamera(){
         val processCameraProvider = ProcessCameraProvider.getInstance(safeContext)

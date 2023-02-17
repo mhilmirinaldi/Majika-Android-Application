@@ -4,4 +4,6 @@
     <string name="title_restoran">Cabang Restoran</string>
     <string name="title_menu">Menu</string>
     <string name="title_keranjang">Keranjang</string>
+    <string name="on_take">Capture</string>
+    <string name="no_take">Take Again ?</string>
 </resources>

@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/navigation_twibbon"
-        android:icon="@drawable/ic_baseline_photo_camera_24"
+        android:icon="@drawable/ic_camera"
         android:title="@string/title_twibbon" />
 
     <item
@@ -19,7 +19,8 @@
     <item
         android:id="@+id/navigation_keranjang"
         android:icon="@drawable/ic_outline_shopping_cart_24"
-        android:title="@string/title_keranjang" />
+        android:title="@string/title_keranjang"
+        />
 
 
 </menu>
