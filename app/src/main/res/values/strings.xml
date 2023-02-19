@@ -6,4 +6,6 @@
     <string name="title_keranjang">Keranjang</string>
     <string name="on_take">Capture</string>
     <string name="no_take">Take Again ?</string>
+    <string name="pay">Bayar</string>
+    <string name="payment_code_detected">Kode Pembayaran Terdeteksi</string>
 </resources>

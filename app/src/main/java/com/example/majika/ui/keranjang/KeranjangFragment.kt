@@ -1,15 +1,18 @@
 package com.example.majika.ui.keranjang
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.camera.core.ExperimentalGetImage
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.majika.databinding.FragmentKeranjangBinding
+import com.example.majika.ui.pembayaran.PembayaranActivity
 
-class KeranjangFragment : Fragment() {
+@ExperimentalGetImage class KeranjangFragment : Fragment() {
 
     private var _binding: FragmentKeranjangBinding? = null
 
@@ -24,6 +27,11 @@ class KeranjangFragment : Fragment() {
     ): View {
         _binding = FragmentKeranjangBinding.inflate(inflater, container, false)
         val root: View = binding.root
+
+        binding.payButtonFloating.setOnClickListener {
+            val intent = Intent(this.context, PembayaranActivity::class.java)
+            this.startActivity(intent)
+        }
 
         return root
     }
