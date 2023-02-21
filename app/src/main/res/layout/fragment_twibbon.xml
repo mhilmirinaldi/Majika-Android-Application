@@ -9,16 +9,18 @@
 
     <ImageButton
         android:id="@+id/leftButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@android:color/transparent"
         android:src="@drawable/ic_left"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/rightButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@android:color/transparent"
         android:src="@drawable/ic_right"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -34,38 +36,22 @@
 
     </androidx.camera.view.PreviewView>
 
-<!--    <ImageView-->
-<!--        android:id="@+id/imageOutput"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:layout_marginBottom="200dp"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="1.0"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintVertical_bias="1.0"-->
-<!--        android:visibility="gone"-->
-<!--         />-->
 
     <ImageView
         android:id="@+id/twibbon"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:scaleType="centerCrop"
         android:src="@drawable/twibbon1"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/leftButton"
-        app:layout_constraintWidth_percent="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/leftButton" />
 
     <ImageButton
         android:id="@+id/buttonTakePicture"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_marginTop="10dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="15dp"
         android:background="@android:color/transparent"
         android:src="@drawable/ic_capture"
         app:layout_constraintEnd_toEndOf="parent"
@@ -79,19 +65,33 @@
         android:layout_marginTop="7dp"
         android:text="@string/on_take"
         android:textColor="@color/item"
+        android:textSize="48px"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonTakePicture" />
 
     <TextView
-        android:id="@+id/selectTwibbon"
+        android:id="@+id/textTwibbon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Twibbon1"
+        android:text="Aku Masuk ITB!!!"
+        android:textColor="@color/item"
+        android:textSize="52px"
         app:layout_constraintBottom_toTopOf="@+id/viewFinder"
         app:layout_constraintEnd_toStartOf="@+id/rightButton"
         app:layout_constraintStart_toEndOf="@+id/leftButton"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/buttonToggle"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="15dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_flip"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/buttonTakePicture"
+        app:layout_constraintTop_toBottomOf="@+id/viewFinder" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

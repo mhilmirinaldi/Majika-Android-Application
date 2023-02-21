@@ -3,22 +3,23 @@
 
     <item
         android:id="@+id/navigation_twibbon"
-        android:icon="@drawable/ic_camera"
+        android:icon="@drawable/twibbon_selector"
         android:title="@string/title_twibbon" />
+
 
     <item
         android:id="@+id/navigation_restoran"
-        android:icon="@drawable/ic_outline_location_on_24"
+        android:icon="@drawable/location_selector"
         android:title="@string/title_restoran" />
 
     <item
         android:id="@+id/navigation_menu"
-        android:icon="@drawable/ic_baseline_restaurant_24"
+        android:icon="@drawable/food_bank_selector"
         android:title="@string/title_menu" />
 
     <item
         android:id="@+id/navigation_keranjang"
-        android:icon="@drawable/ic_outline_shopping_cart_24"
+        android:icon="@drawable/cart_selector"
         android:title="@string/title_keranjang"
         />
 

@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.Majika" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.Majika" parent="Theme.MaterialComponents.DayNight.DarkActionBar.Bridge">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
@@ -11,6 +11,18 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:drawable">@color/white</item>
+        <item name="itemIconTint">@color/white</item>
+        <item name="itemTextColor">@color/white</item>
         <!-- Customize your theme here. -->
+    </style>
+    <style name= "TextAppearance.AppCompat.Widget.ActionBar.Title" parent="@android:style/TextAppearance">
+        <item name ="android:textColor">@color/black</item>
+        <item name ="android:textSize">22sp</item>
+        <item name ="android:textStyle">bold</item>
+        <item name ="android:gravity">center</item>
+    </style>
+    <style name= "Widget.AppCompat.ActionBar" parent="@android:style/TextAppearance">
+        <item name ="android:gravity">center</item>
     </style>
 </resources>

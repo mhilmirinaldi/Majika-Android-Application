@@ -6,10 +6,12 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import android.opengl.Visibility
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -34,8 +36,7 @@ class TwibbonFragment : Fragment() {
     private lateinit var safeContext: Context
     private var takePicture = true
     private var idxImageTwibbon = 0;
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    private var front = true;
     private val binding get() = _binding!!
 
     override fun onAttach(context: Context) {
@@ -66,11 +67,18 @@ class TwibbonFragment : Fragment() {
             changeTwibbon(false);
         }
 
+        binding.buttonToggle.setOnClickListener {
+            toggleCamera()
+        }
+
         return root
     }
 
     private fun changeTwibbon(right: Boolean){
         val twibbon :ImageView = binding.twibbon
+        val textTwibbon: TextView = binding.textTwibbon
+
+        val arrayText = arrayOf("Aku Masuk ITB!!!", "OSKM ITB 2022", "Wisjul 2021", "IMPACT", "Google Cuyy", "Spartans Init", "Yakin Mas", "OSKM ITB 2022", "Uro 2021")
         val array = arrayOf(R.drawable.twibbon1,R.drawable.twibbon2,R.drawable.twibbon3,R.drawable.twibbon4,R.drawable.twibbon5,R.drawable.twibbon6,R.drawable.twibbon7,R.drawable.twibbon8,R.drawable.twibbon9)
         if (right){
             idxImageTwibbon =(idxImageTwibbon +1 +array.size) % array.size
@@ -80,25 +88,21 @@ class TwibbonFragment : Fragment() {
         }
         activity?.runOnUiThread(java.lang.Runnable {
             twibbon.setImageResource(array[idxImageTwibbon])
-
+            textTwibbon.setText(arrayText[idxImageTwibbon])
         })
     }
     private fun takePhoto(){
-//        val imageOutput: ImageView = binding.imageOutput
         val textTakePicture: TextView = binding.textTakePicture
+        val buttonToggleCamera: ImageButton = binding.buttonToggle
         if(!takePicture){
             activity?.runOnUiThread(java.lang.Runnable {
-//                imageOutput.visibility = View.GONE
-//                imageOutput.setImageBitmap(null)
                 textTakePicture.setText(R.string.on_take)
+                buttonToggleCamera.visibility = View.VISIBLE
             })
             takePicture = true
             startCamera()
         }
         else{
-            val outputStream = ByteArrayOutputStream()
-            // Create an OutputFileOptions object with the ByteArrayOutputStream
-//            val outputFileOptions = ImageCapture.OutputFileOptions.Builder(outputStream).build()
             imageCapture.takePicture(cameraExecutor,
                 object : ImageCapture.OnImageCapturedCallback() {
                     override fun onCaptureSuccess(image: ImageProxy){
@@ -111,35 +115,12 @@ class TwibbonFragment : Fragment() {
                         super.onError(exception)
                     }
 
-//                object : ImageCapture.OnImageSavedCallback {
-//                    override fun onError(error: ImageCaptureException)
-//                    {
-//
-//                    }
-//
-//
-//                    override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-//
-//                        activity?.runOnUiThread(java.lang.Runnable {
-//                            imageOutput.visibility = View.VISIBLE
-//                            textTakePicture.setText(R.string.no_take)
-//                            val byteArray = outputStream.toByteArray()
-//
-//                            // Create a Bitmap from the byte array
-//                            val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-//
-//                            //flip image
-//                            val matrix = Matrix()
-//                            matrix.preScale(-1f, 1f)
-//                            val flipBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-//                            // Display the Bitmap in the ImageView
-//                            imageOutput.setImageBitmap(flipBitmap)
-//
-//                        })
-//
-//                    }
                 })
             takePicture = false
+            activity?.runOnUiThread(java.lang.Runnable {
+                textTakePicture.setText(R.string.no_take)
+                buttonToggleCamera.visibility = View.GONE
+            })
             stopCamera()
         }
     }
@@ -201,9 +182,17 @@ class TwibbonFragment : Fragment() {
                 val preview = buildPreviewUseCase()
                 imageCapture = buildImageCapture()
                 cameraProvider.unbindAll()
-                cameraProvider.bindToLifecycle(
-                    this, CameraSelector.DEFAULT_FRONT_CAMERA, preview, imageCapture
-                )
+                if (front) {
+                    cameraProvider.bindToLifecycle(
+                        this, CameraSelector.DEFAULT_FRONT_CAMERA, preview, imageCapture
+                    )
+                }
+                else{
+                    cameraProvider.bindToLifecycle(
+                        this, CameraSelector.DEFAULT_BACK_CAMERA, preview, imageCapture
+                    )
+                }
+
             }
             catch(e: Exception){
             }
@@ -211,6 +200,13 @@ class TwibbonFragment : Fragment() {
 
 
     }
+
+    private fun toggleCamera(){
+        stopCamera()
+        front = !front
+        startCamera()
+    }
+
     fun buildImageCapture(): ImageCapture{
         return ImageCapture.Builder()
             .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
