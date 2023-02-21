@@ -9,22 +9,33 @@ import android.util.Size
 import android.view.View
 import android.widget.Toast
 import androidx.camera.core.CameraSelector
-import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.example.majika.databinding.ActivityPembayaranBinding
+import com.example.majika.network.BackendApi
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.mlkit.vision.barcode.common.Barcode
+import kotlinx.coroutines.launch
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
+class PembayaranViewModel : ViewModel() {
+    var detectedCode: MutableLiveData<String?> = MutableLiveData(null)
+}
+
 class PembayaranActivity : AppCompatActivity(), ScanSuccess {
+
+
     private lateinit var binding: ActivityPembayaranBinding
     private lateinit var cameraExecutor: ExecutorService
-    private var codeDetected = false
+    private lateinit var viewModel: PembayaranViewModel
 
     val REQUEST_CAMERA_CODE = 1
 
@@ -33,12 +44,38 @@ class PembayaranActivity : AppCompatActivity(), ScanSuccess {
         binding = ActivityPembayaranBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        viewModel = ViewModelProvider(this).get(PembayaranViewModel::class.java)
+
+        viewModel.detectedCode.observe( this, {
+            if (it != null) {
+                binding.paymentCode.text = it
+                binding.paymentDetectedContainer.visibility = View.VISIBLE
+            } else {
+                binding.paymentCode.text = ""
+                binding.paymentDetectedContainer.visibility = View.GONE
+            }
+        })
+
         binding.payButton.setOnClickListener {
             Toast.makeText(this, "Pembayaran dimulai...", Toast.LENGTH_SHORT).show()
+            viewModel.viewModelScope.launch {
+                try {
+                    val code = viewModel.detectedCode.value
+                    if (code == null) {
+                        throw Exception("Error: Payment code is empty")
+                    }
+
+                    val result = BackendApi.service.pay(code)
+                    Toast.makeText(this@PembayaranActivity, result.status, Toast.LENGTH_LONG).show()
+                } catch (e: Exception) {
+                    Toast.makeText(this@PembayaranActivity, e.message, Toast.LENGTH_LONG).show()
+                }
+                viewModel.detectedCode.postValue(null)
+            }
         }
+
         binding.retakeButton.setOnClickListener {
-            codeDetected = false
-            binding.paymentDetectedContainer.visibility = View.GONE
+            viewModel.detectedCode.postValue(null)
         }
 
         cameraExecutor = Executors.newSingleThreadExecutor()
@@ -86,7 +123,7 @@ class PembayaranActivity : AppCompatActivity(), ScanSuccess {
 
         processCameraProvider.addListener({
             val cameraProvider = processCameraProvider.get()
-            if (codeDetected) {
+            if (viewModel.detectedCode.value != null) {
                 cameraProvider.unbindAll()
             }
 
@@ -115,8 +152,7 @@ class PembayaranActivity : AppCompatActivity(), ScanSuccess {
     }
 
     override fun onScanSuccess(barcode: Barcode) {
-        codeDetected = true
+        viewModel.detectedCode.postValue(barcode.rawValue)
         binding.paymentDetectedContainer.visibility = View.VISIBLE
-        binding.paymentCode.text = barcode.rawValue
     }
 }
