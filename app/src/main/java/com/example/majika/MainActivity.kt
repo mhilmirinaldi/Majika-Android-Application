@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        supportActionBar?.setBackgroundDrawable(ColorDrawable(resources.getColor(R.color.navbar)))
+        supportActionBar?.setBackgroundDrawable(ColorDrawable(getColor(R.color.navbar)))
         val navView: BottomNavigationView = binding.navView
 
         val navController = findNavController(R.id.nav_host_fragment_activity_main)

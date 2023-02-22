@@ -3,6 +3,7 @@ package com.example.majika.ui.pembayaran
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Size
@@ -18,6 +19,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.majika.R
 import com.example.majika.databinding.ActivityPembayaranBinding
 import com.example.majika.network.BackendApi
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -43,6 +45,8 @@ class PembayaranActivity : AppCompatActivity(), ScanSuccess {
         super.onCreate(savedInstanceState)
         binding = ActivityPembayaranBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        supportActionBar?.setBackgroundDrawable(ColorDrawable(getColor(R.color.navbar)))
 
         viewModel = ViewModelProvider(this).get(PembayaranViewModel::class.java)
 
@@ -125,28 +129,28 @@ class PembayaranActivity : AppCompatActivity(), ScanSuccess {
             val cameraProvider = processCameraProvider.get()
             if (viewModel.detectedCode.value != null) {
                 cameraProvider.unbindAll()
-            }
+            } else {
+                val preview = Preview.Builder().build()
+                    .apply {
+                        setSurfaceProvider(binding.barcodePreview.surfaceProvider)
+                    }
 
-            val preview = Preview.Builder().build()
-                .apply {
-                    setSurfaceProvider(binding.barcodePreview.surfaceProvider)
+                val imageAnalyzer = ImageAnalysis.Builder()
+                    .setTargetResolution(Size(1080, 1920))
+                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                    .build()
+                    .apply {
+                        setAnalyzer(cameraExecutor, QRCodeAnalyzer(this@PembayaranActivity))
+                    }
+
+                val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+
+                try {
+                    cameraProvider.unbindAll()
+                    cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageAnalyzer)
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
-
-            val imageAnalyzer = ImageAnalysis.Builder()
-                .setTargetResolution(Size(1080, 1920))
-                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                .build()
-                .apply {
-                    setAnalyzer(cameraExecutor, QRCodeAnalyzer(this@PembayaranActivity))
-                }
-
-            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-
-            try {
-                cameraProvider.unbindAll()
-                cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageAnalyzer)
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
         }, ContextCompat.getMainExecutor(this))
     }
