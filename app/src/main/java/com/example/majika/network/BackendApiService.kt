@@ -1,13 +1,15 @@
 package com.example.majika.network
 
+import com.example.majika.ui.menu.ItemResponse
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.GET
 
-private const val BASE_URL = "http://192.168.18.241:8000"
+private const val BASE_URL = "http://192.168.0.142:8000"
 
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
@@ -23,8 +25,19 @@ interface BackendApiService {
     suspend fun pay(@Path(value="code", encoded = true) code: String): PaymentResponse
 }
 
+interface ItemAPI{
+    @GET("v1/menu")
+    suspend fun getItems(): ItemResponse
+}
+
 object BackendApi {
     val service: BackendApiService by lazy {
         retrofit.create(BackendApiService::class.java)
+    }
+}
+
+object BackendApiItem{
+    val itemApi: ItemAPI by lazy {
+        retrofit.create(ItemAPI::class.java)
     }
 }
