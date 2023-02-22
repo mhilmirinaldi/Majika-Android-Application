@@ -5,6 +5,7 @@ package com.example.majika.domain
  */
 data class ItemKeranjang(
     val name: String,
+    val currency: String,
     val price: Float,
     val quantity: Int
 )

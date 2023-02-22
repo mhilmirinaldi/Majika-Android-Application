@@ -9,7 +9,7 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.GET
 
-private const val BASE_URL = "http://192.168.0.142:8000"
+private const val BASE_URL = "http://192.168.18.241:8000"
 
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
@@ -20,7 +20,7 @@ private val retrofit = Retrofit.Builder()
     .baseUrl(BASE_URL)
     .build()
 
-interface BackendApiService {
+interface KeranjangAPI {
     @POST("v1/payment/{code}")
     suspend fun pay(@Path(value="code", encoded = true) code: String): PaymentResponse
 }
@@ -30,9 +30,9 @@ interface ItemAPI{
     suspend fun getItems(): ItemResponse
 }
 
-object BackendApi {
-    val service: BackendApiService by lazy {
-        retrofit.create(BackendApiService::class.java)
+object BackendApiKeranjang {
+    val service: KeranjangAPI by lazy {
+        retrofit.create(KeranjangAPI::class.java)
     }
 }
 

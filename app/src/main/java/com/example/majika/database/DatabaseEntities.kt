@@ -12,6 +12,7 @@ data class ItemKeranjangInDB(
     @PrimaryKey
     val name: String,
     val price: Float,
+    val currency: String,
     val quantity: Int
 )
 
@@ -22,8 +23,18 @@ fun List<ItemKeranjangInDB>.asDomainModel(): List<ItemKeranjang> {
     return map {
         ItemKeranjang(
             name = it.name,
+            currency = it.currency,
             price = it.price,
             quantity = it.quantity
         )
     }
+}
+
+fun ItemKeranjang.asDatabaseModel(): ItemKeranjangInDB {
+    return ItemKeranjangInDB(
+        name = this.name,
+        currency = this.currency,
+        price = this.price,
+        quantity = this.quantity
+    )
 }

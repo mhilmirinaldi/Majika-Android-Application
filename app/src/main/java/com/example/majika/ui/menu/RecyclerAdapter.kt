@@ -7,8 +7,12 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.majika.R
+import com.example.majika.domain.ItemKeranjang
+import com.example.majika.repository.KeranjangRepository
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
-class RecyclerAdapter(private val items: List<com.example.majika.ui.menu.Item>) : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>(){
+class RecyclerAdapter(private val items: List<com.example.majika.ui.menu.Item>, private val repo: KeranjangRepository) : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>(){
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tittleView: TextView = itemView.findViewById(R.id.card_tittle)
@@ -28,8 +32,8 @@ class RecyclerAdapter(private val items: List<com.example.majika.ui.menu.Item>) 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var item = items[position]
         holder.tittleView.text = item.title
-        holder.priceView.text = item.price
-        holder.soldView.text = item.sold
+        holder.priceView.text = item.price.toString()
+        holder.soldView.text = item.sold.toString()
         holder.descriptionView.text = item.description
         holder.quantityView.text = item.quantity.toString()
 
@@ -41,6 +45,15 @@ class RecyclerAdapter(private val items: List<com.example.majika.ui.menu.Item>) 
         }
 
         holder.plusButton.setOnClickListener{
+            if (item.quantity == 0) {
+                GlobalScope.launch {
+                    repo.addItemToKeranjang(ItemKeranjang(name = item.title, currency = item.currency, price = item.price, quantity = 1))
+                }
+            } else {
+                GlobalScope.launch {
+                    repo.updateItemInKeranjang(ItemKeranjang(name = item.title, currency = item.currency, price = item.price, quantity = item.quantity + 1))
+                }
+            }
             item.quantity++
             holder.quantityView.text = item.quantity.toString()
         }

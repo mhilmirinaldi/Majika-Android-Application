@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/card_view_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_view"
@@ -23,7 +22,7 @@
             android:orientation="vertical"
             android:padding="10dp">
             <TextView
-                android:id="@+id/card_tittle"
+                android:id="@+id/item_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="TextView"
@@ -31,34 +30,26 @@
                 android:textSize="24sp" />
 
             <TextView
-                    android:id="@+id/card_price"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="2dp"
-                    android:text="TextView"
-                    android:textColor="@color/bg" />
+                android:id="@+id/item_currency"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="2dp"
+                android:text="TextView"
+                android:textColor="@color/bg" />
 
             <TextView
-                    android:id="@+id/card_sold"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="TextView"
-                    android:textColor="@color/bg" />
-
-            <TextView
-                    android:id="@+id/card_description"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="6dp"
-                    android:text="TextView"
-                    android:textColor="@color/bg" />
+                android:id="@+id/item_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                android:textColor="@color/bg" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/LinearLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="250dp"
+            android:layout_marginStart="250dp"
             android:layout_marginTop="38dp"
             android:orientation="horizontal"
             android:padding="10dp">
@@ -75,7 +66,7 @@
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/card_quantity"
+                android:id="@+id/item_quantity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingStart="6dp"
@@ -98,4 +89,5 @@
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

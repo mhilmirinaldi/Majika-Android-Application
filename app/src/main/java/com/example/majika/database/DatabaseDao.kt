@@ -16,4 +16,10 @@ interface DatabaseDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(itemKeranjangs: List<ItemKeranjangInDB>)
+
+    @Query("DELETE FROM item_keranjang")
+    fun deleteAll()
+
+    @Delete
+    fun delete(itemKeranjang: ItemKeranjangInDB)
 }

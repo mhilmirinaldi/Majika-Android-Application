@@ -21,7 +21,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.majika.R
 import com.example.majika.databinding.ActivityPembayaranBinding
-import com.example.majika.network.BackendApi
+import com.example.majika.network.BackendApiKeranjang
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.mlkit.vision.barcode.common.Barcode
 import kotlinx.coroutines.launch
@@ -69,7 +69,7 @@ class PembayaranActivity : AppCompatActivity(), ScanSuccess {
                         throw Exception("Error: Payment code is empty")
                     }
 
-                    val result = BackendApi.service.pay(code)
+                    val result = BackendApiKeranjang.service.pay(code)
                     Toast.makeText(this@PembayaranActivity, result.status, Toast.LENGTH_LONG).show()
                 } catch (e: Exception) {
                     Toast.makeText(this@PembayaranActivity, e.message, Toast.LENGTH_LONG).show()
