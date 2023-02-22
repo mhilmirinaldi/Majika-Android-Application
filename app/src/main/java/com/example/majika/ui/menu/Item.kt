@@ -4,7 +4,8 @@ import com.squareup.moshi.Json
 
 data class Item (
     @Json(name = "name") val title: String,
-    @Json(name = "currency") val price: String,
+    @Json(name = "price") val price: String,
+    @Json(name = "currency") val currency: String,
     @Json(name = "sold") val sold: String,
     @Json(name = "description") val description: String,
     @Json(name = "type") val type : String,
