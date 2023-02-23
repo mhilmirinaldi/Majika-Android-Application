@@ -33,15 +33,6 @@ class MenuFragment : Fragment() {
 
     private var listItem: List<Item>? = null
 
-//    val itemList = listOf(
-//        Items("Makanan A", 10000, 1, "Makanan sehat dan bergizi", "Makanan"),
-//        Items("Makanan V", 10000, 2, "Makanan sehat dan bergizi", "Makanan"),
-//        Items("Makanan D", 10000, 3, "Makanan sehat dan bergizi", "Makanan"),
-//        Items("Makanan W", 10000, 5,  "Makanan sehat dan bergizi", "Makanan"),
-//        Items("Makanan X", 10000, 5, "Makanan sehat dan bergizi", "Makanan"),
-//        Items("Makanan W", 10000, 2, "Makanan sehat dan bergizi", "Makanan")
-//    )
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -70,7 +61,7 @@ class MenuFragment : Fragment() {
                         }
                     }
                     activity?.runOnUiThread {
-                        recyclerView.adapter = RecyclerAdapter(listItem!!, repo)
+                        recyclerView.adapter = RecyclerAdapterMenu(listItem!!, repo)
                     }
                 }
             } catch (e: Exception) {
@@ -89,7 +80,7 @@ class MenuFragment : Fragment() {
                         }
                     }
                 }
-                recyclerView.adapter = RecyclerAdapter(listItem!!, repo)
+                recyclerView.adapter = RecyclerAdapterMenu(listItem!!, repo)
             }
         }
 

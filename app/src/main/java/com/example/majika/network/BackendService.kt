@@ -1,6 +1,7 @@
 package com.example.majika.network
 
 import com.example.majika.ui.menu.ItemResponse
+import com.example.majika.ui.restoran.RestaurantResponse
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit
@@ -9,7 +10,7 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.GET
 
-private const val BASE_URL = "http://192.168.18.241:8000"
+private const val BASE_URL = "http://192.168.0.142:8000"
 
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
@@ -30,6 +31,11 @@ interface ItemAPI{
     suspend fun getItems(): ItemResponse
 }
 
+interface RestaurantAPI{
+    @GET("v1/branch")
+    suspend fun getRestaurants(): RestaurantResponse
+}
+
 object BackendApiKeranjang {
     val service: KeranjangAPI by lazy {
         retrofit.create(KeranjangAPI::class.java)
@@ -39,5 +45,11 @@ object BackendApiKeranjang {
 object BackendApiItem{
     val itemApi: ItemAPI by lazy {
         retrofit.create(ItemAPI::class.java)
+    }
+}
+
+object BackendApiRestaurant{
+    val restaurantApi: RestaurantAPI by lazy {
+        retrofit.create(RestaurantAPI::class.java)
     }
 }
