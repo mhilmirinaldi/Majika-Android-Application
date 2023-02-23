@@ -14,7 +14,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 
-class RecyclerAdapterMenu(private val items: List<com.example.majika.ui.menu.Item>, private val repo: KeranjangRepository) : RecyclerView.Adapter<RecyclerAdapterMenu.ViewHolder>(){
+class RecyclerAdapterMenu(private val repo: KeranjangRepository) : RecyclerView.Adapter<RecyclerAdapterMenu.ViewHolder>(){
+
+    private val items: MutableList<Item> = mutableListOf()
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tittleView: TextView = itemView.findViewById(R.id.card_tittle)
@@ -24,6 +26,13 @@ class RecyclerAdapterMenu(private val items: List<com.example.majika.ui.menu.Ite
         val quantityView: TextView = itemView.findViewById(R.id.card_quantity)
         val minusButton: Button = view.findViewById(R.id.btn_minus)
         val plusButton: Button = view.findViewById(R.id.btn_plus)
+    }
+
+    // Update items with a new list
+    fun updateItems(newList: List<Item>) {
+        this.items.clear()
+        this.items.addAll(newList)
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

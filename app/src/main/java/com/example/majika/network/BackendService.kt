@@ -10,7 +10,7 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.GET
 
-private const val BASE_URL = "http://192.168.0.142:8000"
+private const val BASE_URL = "http://192.168.18.241:8000"
 
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
@@ -37,7 +37,7 @@ interface RestaurantAPI{
 }
 
 object BackendApiKeranjang {
-    val service: KeranjangAPI by lazy {
+    val keranjangApi: KeranjangAPI by lazy {
         retrofit.create(KeranjangAPI::class.java)
     }
 }

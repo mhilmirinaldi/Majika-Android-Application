@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.camera.core.ExperimentalGetImage
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -24,18 +23,16 @@ class KeranjangViewModel : ViewModel() {
     var currency: String = ""
 }
 
-@ExperimentalGetImage class KeranjangFragment : Fragment() {
+class KeranjangFragment : Fragment() {
     companion object {
         val HARGA_TOTAL_KEY = "HARGA_TOTAL_KEY"
         val CURRENCY_KEY = "CURRENCY_KEY"
     }
 
-    private lateinit var repo: KeranjangRepository
     private lateinit var viewModel: KeranjangViewModel
+    private lateinit var repo: KeranjangRepository
 
     private var _binding: FragmentKeranjangBinding? = null
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -46,15 +43,22 @@ class KeranjangViewModel : ViewModel() {
         _binding = FragmentKeranjangBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        // Initialize repo and viewModel
         repo = KeranjangRepository(Database.getDatabase(requireContext()))
         viewModel = ViewModelProvider(this).get(KeranjangViewModel::class.java)
         viewModel.keranjang = repo.keranjang
 
+        // Set up adapter
+        val adapter = KeranjangRecycler(repo)
+        adapter.updateItems(viewModel.keranjang.value ?: listOf())
+        binding.keranjangRecyclerview.adapter = adapter
         binding.keranjangRecyclerview.layoutManager = LinearLayoutManager(requireContext())
-        viewModel.keranjang.observe(viewLifecycleOwner) {
-            binding.keranjangRecyclerview.adapter = KeranjangRecycler(it, repo)
 
-            var hargaTotal: Float = 0.0F
+        // Set up keranjang observer
+        viewModel.keranjang.observe(viewLifecycleOwner) {
+            adapter.updateItems(it)     // Update adapter items
+
+            var hargaTotal = 0.0F
             var currency = "IDR"
             viewModel.keranjang.value?.forEach {
                 hargaTotal += it.price * it.quantity
@@ -66,6 +70,7 @@ class KeranjangViewModel : ViewModel() {
             binding.keranjangHargatotal.text = "${viewModel.currency} ${formattedNumber}"
         }
 
+        // Pay button on click
         binding.keranjangPay.setOnClickListener {
             val intent = Intent(this.context, PembayaranActivity::class.java)
             intent.putExtra(CURRENCY_KEY, viewModel.currency)

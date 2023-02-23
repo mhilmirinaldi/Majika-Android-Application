@@ -137,7 +137,7 @@ class PembayaranActivity : AppCompatActivity(), ScanSuccess {
                         throw Exception("Error: Payment code is empty")
                     }
 
-                    val result = BackendApiKeranjang.service.pay(code)
+                    val result = BackendApiKeranjang.keranjangApi.pay(code)
                     if (result.status == "SUCCESS") {
                         viewModel.state.postValue(State.PAYMENT_SUCCESS)
                     } else {
