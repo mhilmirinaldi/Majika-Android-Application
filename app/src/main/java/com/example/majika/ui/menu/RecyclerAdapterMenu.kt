@@ -12,7 +12,7 @@ import com.example.majika.repository.KeranjangRepository
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class RecyclerAdapter(private val items: List<com.example.majika.ui.menu.Item>, private val repo: KeranjangRepository) : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>(){
+class RecyclerAdapterMenu(private val items: List<com.example.majika.ui.menu.Item>, private val repo: KeranjangRepository) : RecyclerView.Adapter<RecyclerAdapterMenu.ViewHolder>(){
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tittleView: TextView = itemView.findViewById(R.id.card_tittle)

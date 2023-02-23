@@ -13,7 +13,7 @@
 
     <fragment
         android:id="@+id/navigation_restoran"
-        android:name="com.example.majika.ui.restoran.RestoranFragment"
+        android:name="com.example.majika.ui.restoran.RestaurantFragment"
         android:label="@string/title_restoran"
         tools:layout="@layout/fragment_restoran" />
 
