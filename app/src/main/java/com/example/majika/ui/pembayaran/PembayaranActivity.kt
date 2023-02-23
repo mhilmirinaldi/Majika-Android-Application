@@ -2,39 +2,54 @@ package com.example.majika.ui.pembayaran
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Size
 import android.view.View
-import android.widget.Toast
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
+import androidx.camera.core.UseCase
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.CameraController.UseCases
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.lifecycleScope
+import com.example.majika.MainActivity
 import com.example.majika.R
 import com.example.majika.databinding.ActivityPembayaranBinding
 import com.example.majika.network.BackendApiKeranjang
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.mlkit.vision.barcode.common.Barcode
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
+enum class State {
+    SCANNING,
+    CODE_DETECTED,
+    PAYING,
+    PAYMENT_SUCCESS,
+    PAYMENT_FAILED
+}
+
 class PembayaranViewModel : ViewModel() {
-    var detectedCode: MutableLiveData<String?> = MutableLiveData(null)
+    val state: MutableLiveData<State> = MutableLiveData(State.SCANNING)
+
+    var detectedCode: String? = null
+    var isSuccess: Boolean = false
+    var detailMessage: String = ""
 }
 
 class PembayaranActivity : AppCompatActivity(), ScanSuccess {
-
-
     private lateinit var binding: ActivityPembayaranBinding
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var viewModel: PembayaranViewModel
@@ -50,37 +65,86 @@ class PembayaranActivity : AppCompatActivity(), ScanSuccess {
 
         viewModel = ViewModelProvider(this).get(PembayaranViewModel::class.java)
 
-        viewModel.detectedCode.observe( this, {
-            if (it != null) {
-                binding.paymentCode.text = it
-                binding.paymentDetectedContainer.visibility = View.VISIBLE
-            } else {
-                binding.paymentCode.text = ""
-                binding.paymentDetectedContainer.visibility = View.GONE
-            }
-        })
+        viewModel.state.observe(this) {
+            binding.pembayaranProgressbar.visibility = View.GONE
+            binding.pembayaranTomenutext.visibility = View.GONE
+            binding.pembayaranStatuscontainer.visibility = View.INVISIBLE
+            binding.pembayaranButtonscontainer.visibility = View.GONE
+            binding.pembayaranRetakeinfailed.visibility = View.GONE
+            stopCamera()
+            when (it) {
+                State.SCANNING -> {
+                    startCamera()
+                }
+                State.CODE_DETECTED -> {
+                    binding.pembayaranButtonscontainer.visibility = View.VISIBLE
+                }
+                State.PAYING -> {
+                    binding.pembayaranButtonscontainer.visibility = View.GONE
+                    binding.pembayaranProgressbar.visibility = View.VISIBLE
+                }
+                State.PAYMENT_SUCCESS -> {
+                    // Setting back to menu text
+                    binding.pembayaranStatuscontainer.visibility = View.VISIBLE
+                    binding.pembayaranStatustext.text = "Berhasil"
+                    binding.pembayaranStatusdetail.text = "Sudah dibayar"
+                    binding.pembayaranStatusicon.setImageResource(R.drawable.ic_ok)
+                    binding.pembayaranTomenutext.visibility = View.VISIBLE
 
-        binding.payButton.setOnClickListener {
-            Toast.makeText(this, "Pembayaran dimulai...", Toast.LENGTH_SHORT).show()
-            viewModel.viewModelScope.launch {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        repeat(5) {
+                            runOnUiThread {
+                                binding.pembayaranTomenutext.text = "menuju Menu...(${5 - it})"
+                            }
+                            delay(1000)
+                        }
+                        runOnUiThread {
+                            binding.pembayaranTomenutext.text = "menuju Menu...(0)"
+
+                            // Go to Menu, clearing up the activity stack
+                            val intent = Intent(this@PembayaranActivity, MainActivity::class.java)
+                            intent.flags =
+                                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                        }
+                    }
+                }
+                else -> {
+                    binding.pembayaranStatuscontainer.visibility = View.VISIBLE
+                    binding.pembayaranStatustext.text = "Gagal"
+                    binding.pembayaranStatusdetail.text = viewModel.detailMessage
+                    binding.pembayaranStatusicon.setImageResource(R.drawable.ic_cancel)
+
+                    binding.pembayaranRetakeinfailed.visibility = View.VISIBLE
+                }
+            }
+        }
+
+        binding.pembayaranPay.setOnClickListener {
+            viewModel.state.postValue(State.PAYING)
+            lifecycleScope.launch {
                 try {
-                    val code = viewModel.detectedCode.value
+                    val code = viewModel.detectedCode
                     if (code == null) {
                         throw Exception("Error: Payment code is empty")
                     }
 
                     val result = BackendApiKeranjang.service.pay(code)
-                    Toast.makeText(this@PembayaranActivity, result.status, Toast.LENGTH_LONG).show()
+                    if (result.status == "SUCCESS") {
+                        viewModel.state.postValue(State.PAYMENT_SUCCESS)
+                    } else {
+                        throw Exception("Belum dibayar")
+                    }
                 } catch (e: Exception) {
-                    Toast.makeText(this@PembayaranActivity, e.message, Toast.LENGTH_LONG).show()
+                    viewModel.detailMessage = e.message ?: "Belum dibayar"
+                    viewModel.state.postValue(State.PAYMENT_FAILED)
                 }
-                viewModel.detectedCode.postValue(null)
+                viewModel.detectedCode = null
             }
         }
 
-        binding.retakeButton.setOnClickListener {
-            viewModel.detectedCode.postValue(null)
-        }
+        binding.pembayaranRetake.setOnClickListener { viewModel.state.postValue(State.SCANNING) }
+        binding.pembayaranRetakeinfailed.setOnClickListener { viewModel.state.postValue(State.SCANNING) }
 
         cameraExecutor = Executors.newSingleThreadExecutor()
 
@@ -94,13 +158,17 @@ class PembayaranActivity : AppCompatActivity(), ScanSuccess {
     }
 
     private fun isCameraPermissionGranted() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
             startCamera()
         } else {
             MaterialAlertDialogBuilder(this)
                 .setTitle("Izin diperlukan")
                 .setMessage("Aplikasi perlu akses ke kamera untuk memindai QR Code")
-                .setPositiveButton("Siap") {_, _ ->
+                .setPositiveButton("Siap") { _, _ ->
                     requestCameraPermission()
                 }
                 .setCancelable(false)
@@ -121,42 +189,46 @@ class PembayaranActivity : AppCompatActivity(), ScanSuccess {
         }
     }
 
+    private fun stopCamera() {
+        val processCameraProvider = ProcessCameraProvider.getInstance(this)
+        processCameraProvider.addListener({
+            val cameraProvider = processCameraProvider.get()
+            cameraProvider.unbindAll()
+        }, ContextCompat.getMainExecutor(this))
+    }
+
     @SuppressLint("UnsafeOptInUsageError")
     private fun startCamera() {
         val processCameraProvider = ProcessCameraProvider.getInstance(this)
 
         processCameraProvider.addListener({
             val cameraProvider = processCameraProvider.get()
-            if (viewModel.detectedCode.value != null) {
-                cameraProvider.unbindAll()
-            } else {
-                val preview = Preview.Builder().build()
-                    .apply {
-                        setSurfaceProvider(binding.barcodePreview.surfaceProvider)
-                    }
-
-                val imageAnalyzer = ImageAnalysis.Builder()
-                    .setTargetResolution(Size(1080, 1920))
-                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                    .build()
-                    .apply {
-                        setAnalyzer(cameraExecutor, QRCodeAnalyzer(this@PembayaranActivity))
-                    }
-
-                val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-
-                try {
-                    cameraProvider.unbindAll()
-                    cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageAnalyzer)
-                } catch (e: Exception) {
-                    e.printStackTrace()
+            val preview = Preview.Builder().build()
+                .apply {
+                    setSurfaceProvider(binding.barcodePreview.surfaceProvider)
                 }
+
+            val imageAnalyzer = ImageAnalysis.Builder()
+                .setTargetResolution(Size(1080, 1920))
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                .build()
+                .apply {
+                    setAnalyzer(cameraExecutor, QRCodeAnalyzer(this@PembayaranActivity))
+                }
+
+            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+
+            try {
+                cameraProvider.unbindAll()
+                cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageAnalyzer)
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }, ContextCompat.getMainExecutor(this))
     }
 
     override fun onScanSuccess(barcode: Barcode) {
-        viewModel.detectedCode.postValue(barcode.rawValue)
-        binding.paymentDetectedContainer.visibility = View.VISIBLE
+        viewModel.detectedCode = barcode.rawValue
+        viewModel.state.postValue(State.CODE_DETECTED)
     }
 }
