@@ -9,6 +9,7 @@
         android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="150dp"
         android:layout_margin="15dp"
         app:cardBackgroundColor="@color/item"
         app:cardCornerRadius="15dp"
@@ -28,14 +29,6 @@
                 android:text="TextView"
                 android:textColor="@color/navbar"
                 android:textSize="24sp" />
-
-            <TextView
-                android:id="@+id/item_currency"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="2dp"
-                android:text="TextView"
-                android:textColor="@color/bg" />
 
             <TextView
                 android:id="@+id/item_price"
