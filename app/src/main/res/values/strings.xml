@@ -11,6 +11,7 @@
     <string name="cari_makanan">Cari Makanan</string>
     <string name="makanan">Makanan</string>
     <string name="minuman">Minuman</string>
+    <string name="all">All</string>
     <string name="minus_btn">-</string>
     <string name="plus_btn">+</string>
     <string name="quantity">0</string>

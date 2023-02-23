@@ -84,7 +84,27 @@ class MenuFragment : Fragment() {
             }
         }
 
+        binding.btnAll.setOnClickListener {
+            recyclerView.adapter = RecyclerAdapterMenu(filterListItems(), repo)
+        }
+
+        binding.btnMakanan.setOnClickListener {
+            recyclerView.adapter = RecyclerAdapterMenu(filterListItems("Food"), repo)
+        }
+
+        binding.btnMinuman.setOnClickListener {
+            recyclerView.adapter = RecyclerAdapterMenu(filterListItems("Drink"), repo)
+        }
+
         return root
+    }
+
+    private fun filterListItems(filter: String? = null): List<Item> {
+        return if (filter.isNullOrEmpty()) {
+            listItem!!
+        } else {
+            listItem!!.filter { it.type == filter }
+        }
     }
 
     override fun onDestroyView() {

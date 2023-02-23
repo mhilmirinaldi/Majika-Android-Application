@@ -3,6 +3,7 @@
     <solid
         android:color="@color/navbar"/>
     <corners
-        android:radius="100sp"/>
-
+        android:bottomRightRadius="100sp"
+        android:topRightRadius="100sp"/>
+    <stroke android:width="1sp" android:color="@color/item"/>
 </shape>
