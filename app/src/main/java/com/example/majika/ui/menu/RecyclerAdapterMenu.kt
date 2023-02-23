@@ -1,5 +1,6 @@
 package com.example.majika.ui.menu
 
+import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import com.example.majika.domain.ItemKeranjang
 import com.example.majika.repository.KeranjangRepository
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.text.NumberFormat
 
 class RecyclerAdapterMenu(private val items: List<com.example.majika.ui.menu.Item>, private val repo: KeranjangRepository) : RecyclerView.Adapter<RecyclerAdapterMenu.ViewHolder>(){
 
@@ -30,10 +32,13 @@ class RecyclerAdapterMenu(private val items: List<com.example.majika.ui.menu.Ite
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val res: Resources = holder.itemView.context.resources
         var item = items[position]
         holder.tittleView.text = item.title
-        holder.priceView.text = item.price.toString()
-        holder.soldView.text = item.sold.toString()
+        val formattePrice = android.icu.text.NumberFormat.getNumberInstance(res.configuration.locales[0]).format(item.price)
+        holder.priceView.text = "${item.currency} ${formattePrice}"
+        val formatteSold = android.icu.text.NumberFormat.getNumberInstance(res.configuration.locales[0]).format(item.sold)
+        holder.soldView.text = "Terjual ${formatteSold}"
         holder.descriptionView.text = item.description
         holder.quantityView.text = item.quantity.toString()
 
