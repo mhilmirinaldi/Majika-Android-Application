@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -19,6 +20,7 @@ import com.example.majika.network.BackendApiItem
 import com.example.majika.repository.KeranjangRepository
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.util.*
 
 class MenuFragmentViewModel: ViewModel() {
     lateinit var keranjang: LiveData<List<ItemKeranjang>>
@@ -32,6 +34,9 @@ class MenuFragment : Fragment() {
     private val binding get() = _binding!!
 
     private var listItem: List<Item>? = null
+
+    private var isMakananSelected = false
+    private var isMinumanSelected = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -85,16 +90,35 @@ class MenuFragment : Fragment() {
         }
 
         binding.btnAll.setOnClickListener {
+            isMakananSelected = false
+            isMinumanSelected = false
             recyclerView.adapter = RecyclerAdapterMenu(filterListItems(), repo)
         }
 
         binding.btnMakanan.setOnClickListener {
+            isMakananSelected = true
+            isMinumanSelected = false
             recyclerView.adapter = RecyclerAdapterMenu(filterListItems("Food"), repo)
         }
 
         binding.btnMinuman.setOnClickListener {
+            isMakananSelected = false
+            isMinumanSelected = true
             recyclerView.adapter = RecyclerAdapterMenu(filterListItems("Drink"), repo)
         }
+
+        binding.cariMenu.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextChange(p0: String?): Boolean {
+                if (p0 != null) {
+                    searchItems(p0.lowercase(Locale.getDefault()))
+                }
+                return true
+            }
+
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+                return false
+            }
+        })
 
         return root
     }
@@ -104,6 +128,19 @@ class MenuFragment : Fragment() {
             listItem!!
         } else {
             listItem!!.filter { it.type == filter }
+        }
+    }
+
+    private fun searchItems(query: String, filter: String? = null) {
+        if (listItem != null) {
+            val filteredList = if (isMakananSelected) {
+                listItem!!.filter { it.type == "Food" && it.title.lowercase(Locale.getDefault()).contains(query) }
+            } else if (isMinumanSelected){
+                listItem!!.filter { it.type == "Drink" && it.title.lowercase(Locale.getDefault()).contains(query) }
+            } else{
+                listItem!!.filter { it.title.lowercase(Locale.getDefault()).contains(query) }
+            }
+            binding.recyclerViewMakanan.adapter = RecyclerAdapterMenu(filteredList, repo)
         }
     }
 

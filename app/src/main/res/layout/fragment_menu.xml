@@ -27,9 +27,9 @@
             android:layout_weight="1"
             android:background="@drawable/btn_all"
             android:text="@string/all"
+            android:textAllCaps="false"
             android:textColor="@color/item"
-            android:textSize="14sp"
-            android:textAllCaps="false"/>
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/btn_makanan"
@@ -37,9 +37,9 @@
             android:layout_height="25dp"
             android:background="@drawable/btn_makanan"
             android:text="@string/makanan"
+            android:textAllCaps="false"
             android:textColor="@color/item"
-            android:textSize="14sp"
-            android:textAllCaps="false"/>
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/btn_minuman"
@@ -47,30 +47,25 @@
             android:layout_height="25dp"
             android:background="@drawable/btn_minuman"
             android:text="@string/minuman"
+            android:textAllCaps="false"
             android:textColor="@color/item"
-            android:textSize="14sp"
-            android:textAllCaps="false"/>
+            android:textSize="14sp" />
     </LinearLayout>
 
-    <EditText
-        android:id="@+id/cari_makanan"
+    <SearchView
+        android:id="@+id/cari_menu"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="35dp"
-        android:layout_marginEnd="12dp"
-        android:autofillHints="@string/cari_makanan"
-        android:backgroundTint="#F2F2F2"
-        android:drawableStart="?android:attr/actionModeWebSearchDrawable"
-        android:hint="@string/cari_makanan"
-        android:inputType="text"
-        android:maxLines="1"
-        android:padding="15dp"
-        android:textColorHint="#B8B8B8"
-        android:textSize="14sp"
+        android:layout_height="28dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/btn_search"
+        android:iconifiedByDefault="false"
+        android:queryBackground="@android:color/transparent"
+        android:queryHint="@string/cari_menu"
+        android:textSize="11sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/LinearLayout" />
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/LinearLayout" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_makanan"
@@ -79,7 +74,7 @@
         android:layout_marginTop="90dp"
         android:layout_marginBottom="65dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="@id/cari_makanan">
+        app:layout_constraintTop_toTopOf="@id/cari_menu">
 
     </androidx.recyclerview.widget.RecyclerView>
 
