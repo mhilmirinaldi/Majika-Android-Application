@@ -2,7 +2,7 @@
     <string name="app_name">Majika</string>
     <string name="title_twibbon">Twibbon</string>
     <string name="title_restoran">Cabang Restoran</string>
-    <string name="title_menu">Menu</string>
+    <string name="title_menu">Daftar Menu</string>
     <string name="title_keranjang">Keranjang</string>
     <string name="on_take">Capture</string>
     <string name="no_take">Take Again ?</string>
@@ -16,4 +16,5 @@
     <string name="plus_btn">+</string>
     <string name="quantity">0</string>
     <string name="maps">Maps</string>
+    <string name="temperature">°C</string>
 </resources>
