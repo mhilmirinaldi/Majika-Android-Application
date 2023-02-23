@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.ColorDrawable
+import android.icu.text.NumberFormat
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Size
@@ -12,9 +13,7 @@ import android.view.View
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
-import androidx.camera.core.UseCase
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.view.CameraController.UseCases
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
@@ -25,11 +24,13 @@ import com.example.majika.MainActivity
 import com.example.majika.R
 import com.example.majika.databinding.ActivityPembayaranBinding
 import com.example.majika.network.BackendApiKeranjang
+import com.example.majika.ui.keranjang.KeranjangFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.mlkit.vision.barcode.common.Barcode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -45,8 +46,10 @@ class PembayaranViewModel : ViewModel() {
     val state: MutableLiveData<State> = MutableLiveData(State.SCANNING)
 
     var detectedCode: String? = null
-    var isSuccess: Boolean = false
     var detailMessage: String = ""
+
+    var currency: String = ""
+    var hargaTotal: Float = 0.0F
 }
 
 class PembayaranActivity : AppCompatActivity(), ScanSuccess {
@@ -64,6 +67,11 @@ class PembayaranActivity : AppCompatActivity(), ScanSuccess {
         supportActionBar?.setBackgroundDrawable(ColorDrawable(getColor(R.color.navbar)))
 
         viewModel = ViewModelProvider(this).get(PembayaranViewModel::class.java)
+        viewModel.currency = intent.getStringExtra(KeranjangFragment.CURRENCY_KEY) ?: ""
+        viewModel.hargaTotal = intent.getFloatExtra(KeranjangFragment.HARGA_TOTAL_KEY, 0.0F)
+
+        val formattedNumber = NumberFormat.getNumberInstance(resources.configuration.locales[0]).format(viewModel.hargaTotal)
+        binding.pembayaranHargatotal.text = "Total Harga: ${viewModel.currency} ${formattedNumber}"
 
         viewModel.state.observe(this) {
             binding.pembayaranProgressbar.visibility = View.GONE

@@ -57,17 +57,15 @@ class MenuFragment : Fragment() {
         GlobalScope.launch {
             try {
                 listItem = BackendApiItem.itemApi.getItems().listItem
-                if (listItem != null) {
-                    viewModel.keranjang.value?.forEach {
-                        for (i in 0 until listItem!!.size) {
-                            if (listItem!![i].title == it.name) {
-                                listItem!![i].quantity = it.quantity
-                            }
+                viewModel.keranjang.value?.forEach {
+                    for (i in 0 until listItem!!.size) {
+                        if (listItem!![i].title == it.name) {
+                            listItem!![i].quantity = it.quantity
                         }
                     }
-                    activity?.runOnUiThread {
-                        recyclerView.adapter = RecyclerAdapterMenu(listItem!!, repo)
-                    }
+                }
+                activity?.runOnUiThread {
+                    recyclerView.adapter = RecyclerAdapterMenu(listItem!!, repo)
                 }
             } catch (e: Exception) {
                 activity?.runOnUiThread {
