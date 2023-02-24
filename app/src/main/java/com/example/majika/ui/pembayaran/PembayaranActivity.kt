@@ -22,8 +22,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.majika.MainActivity
 import com.example.majika.R
+import com.example.majika.database.Database
 import com.example.majika.databinding.ActivityPembayaranBinding
 import com.example.majika.network.BackendApiKeranjang
+import com.example.majika.repository.KeranjangRepository
 import com.example.majika.ui.keranjang.KeranjangFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.mlkit.vision.barcode.common.Barcode
@@ -100,6 +102,11 @@ class PembayaranActivity : AppCompatActivity(), ScanSuccess {
                     binding.pembayaranTomenutext.visibility = View.VISIBLE
 
                     lifecycleScope.launch(Dispatchers.IO) {
+                        // Clear keranjang
+                        val repo = KeranjangRepository(Database.getDatabase(this@PembayaranActivity))
+                        repo.deleteAllInKeranjang()
+
+                        // Wait for 5 seconds before go to Menu
                         repeat(5) {
                             runOnUiThread {
                                 binding.pembayaranTomenutext.text = "menuju Menu...(${5 - it})"

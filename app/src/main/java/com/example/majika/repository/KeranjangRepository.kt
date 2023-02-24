@@ -1,5 +1,6 @@
 package com.example.majika.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.map
@@ -18,24 +19,29 @@ class KeranjangRepository(private val database: Database) {
 
     suspend fun refreshKeranjang() {
         withContext(Dispatchers.IO) {
-            val menus = BackendApiItem.itemApi.getItems()
-            val itemsKeranjang = keranjang.value
-            val latestItemsKeranjang = mutableListOf<ItemKeranjangInDB>()
+            try {
+                val menus = BackendApiItem.itemApi.getItems()
+                val itemsKeranjang = keranjang.value
+                val latestItemsKeranjang = mutableListOf<ItemKeranjangInDB>()
 
-            // Only retain items in keranjang database with corresponding menu on network
-            itemsKeranjang?.forEach {itemKeranjang ->
-                for (i in 0 until menus.listItem.size) {
-                    if (itemKeranjang.name == menus.listItem[i].title) {
-                        val menu = menus.listItem[i]
-                        latestItemsKeranjang.add(ItemKeranjangInDB(name = menu.title, currency = menu.currency, price = menu.price, quantity = itemKeranjang.quantity))
-                        break
+                // Only retain items in keranjang database with corresponding menu on network
+                itemsKeranjang?.forEach {itemKeranjang ->
+                    for (i in 0 until menus.listItem.size) {
+                        if (itemKeranjang.name == menus.listItem[i].title && itemKeranjang.price == menus.listItem[i].price && itemKeranjang.currency == menus.listItem[i].currency) {
+                            val menu = menus.listItem[i]
+                            latestItemsKeranjang.add(ItemKeranjangInDB(name = menu.title, currency = menu.currency, price = menu.price, quantity = itemKeranjang.quantity))
+                            break
+                        }
                     }
                 }
-            }
 
-            // Clear and insert to database
-            database.dao().deleteAll()
-            database.dao().insertAll(latestItemsKeranjang)
+                // Clear and insert to database
+                database.dao().deleteAll()
+                database.dao().insertAll(latestItemsKeranjang)
+            } catch (e: Exception) {
+                // Do nothing on exception
+                Log.d("Refresh Keranjang Exception", e.message ?: "")
+            }
         }
     }
 
@@ -54,6 +60,12 @@ class KeranjangRepository(private val database: Database) {
     suspend fun deleteItemInKeranjang(itemKeranjang: ItemKeranjang) {
         withContext(Dispatchers.IO) {
             database.dao().delete(itemKeranjang.asDatabaseModel())
+        }
+    }
+
+    suspend fun deleteAllInKeranjang() {
+        withContext(Dispatchers.IO) {
+            database.dao().deleteAll()
         }
     }
 }
