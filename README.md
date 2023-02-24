@@ -8,6 +8,11 @@ Aplikasi Multiverse kegunaan yang terdapat foto twibbon yang tidak berhubungan d
 
 Berikut merupakan library yang digunakan
 
+- Retrofit
+- Moshi
+- Google ML kit (Barcode Scanning)
+- Room
+- CameraX
 
 ## Contributor
 
@@ -24,7 +29,7 @@ dengan pembagian tugas sebagai berikut
 | Hilmi         | - daftar makanan minuman         |
 |               | - halaman cabang restoran (gmaps)| 
 | Bryan         | - halaman keranjang              |
-|               | - halaman pembayaran (sqan qr)   | 
+|               | - halaman pembayaran (scan qr)   | 
 | Mahesa        | - header dan navbar              |
 |               | - halaman twibbon (kamera)       |
 
@@ -36,9 +41,9 @@ to be
 
 | Tugas                            | Spent      |
 | -------------------------------- | ---------- |
-| - daftar makanan minuman         |            |
-| - halaman cabang restoran (gmaps)|            |
-| - halaman keranjang              |            |
-| - halaman pembayaran (sqan qr)   |            |
-| - header dan navbar              | 6h         |
-| - halaman twibbon (kamera)       | 30h        |
+| - daftar makanan minuman         | 12h        |
+| - halaman cabang restoran (gmaps)| 10h        |
+| - halaman keranjang              | 12h        |
+| - halaman pembayaran (scan qr)   | 12h        |
+| - header dan navbar              | 2h         |
+| - halaman twibbon (kamera)       | 24h        |
