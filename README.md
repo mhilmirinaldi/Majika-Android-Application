@@ -46,11 +46,12 @@ dengan pembagian tugas sebagai berikut
 
 ## Screenshots
 
-![twibbon](/screenshot/twibbon.png)
-![cabang restoran](/screenshot/cabang_restoran.png)
-![daftar menu](/screenshot/daftar_menu.png)
-![keranjang](/screenshot/keranjang.png)
-![scan qr](/screenshot/scan_qr.png)
+<img src="./screenshot/twibbon.png" style="width:25%;height:25%;">
+<img src="./screenshot/cabang_restoran.png" style="width:25%;height:25%;">
+<img src="./screenshot/daftar_menu.png" style="width:25%;height:25%;">
+<img src="./screenshot/keranjang.png" style="width:25%;height:25%;">
+<img src="./screenshot/scan_qr.png" style="width:25%;height:25%;">
+
 ## Time Spent
 
 | Tugas                            | Spent      |
