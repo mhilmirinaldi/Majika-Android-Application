@@ -82,13 +82,31 @@ class MenuFragment : Fragment() {
         // If keranjang change, update item's quantity in Menu
         viewModel.keranjang.observe(viewLifecycleOwner) {
             it.forEach {
-                for (i in 0 until listItem.size) {
-                    if (listItem[i].title == it.name) {
-                        listItem[i].quantity = it.quantity
+                if (isMakananSelected){
+                    for (i in 0 until filterListItems("Food").size) {
+                        if (filterListItems("Food")[i].title == it.name) {
+                            filterListItems("Food")[i].quantity = it.quantity
+                        }
                     }
+                    adapter.updateItems(filterListItems("Food"))
+                } else if (isMinumanSelected){
+                    for (i in 0 until filterListItems("Drink").size) {
+                        if (filterListItems("Drink")[i].title == it.name) {
+                            filterListItems("Drink")[i].quantity = it.quantity
+                        }
+                    }
+                    adapter.updateItems(filterListItems("Drink"))
+                } else{
+                    for (i in 0 until filterListItems().size) {
+                        if (filterListItems()[i].title == it.name) {
+                            filterListItems()[i].quantity = it.quantity
+                        }
+                    }
+                    adapter.updateItems(filterListItems())
                 }
+
             }
-            adapter.updateItems(listItem)
+
         }
 
         // Filtering button on click
