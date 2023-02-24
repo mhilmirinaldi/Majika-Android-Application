@@ -49,10 +49,11 @@ dengan pembagian tugas sebagai berikut
 ## Screenshots
 
 <img src="./screenshot/twibbon.png" width="25%" height="25%">
-<img src="./screenshot/cabang_restoran.png" style="width:25%;height:25%;">
-<img src="./screenshot/daftar_menu.png" style="width:25%;height:25%;">
-<img src="./screenshot/keranjang.png" style="width:25%;height:25%;">
-<img src="./screenshot/scan_qr.png" style="width:25%;height:25%;">
+<img src="./screenshot/cabang_restoran.png" width="25%" height="25%">
+<img src="./screenshot/daftar_menu.png" width="25%" height="25%">
+<img src="./screenshot/keranjang.png" width="25%" height="25%">
+<img src="./screenshot/scan_qr.png" width="25%" height="25%">
+
 
 ## Time Spent
 
