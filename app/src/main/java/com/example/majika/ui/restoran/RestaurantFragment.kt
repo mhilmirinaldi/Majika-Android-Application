@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,10 +34,17 @@ class RestaurantFragment : Fragment() {
         recyclerView.layoutManager = layoutManager
         val coroutineScope = CoroutineScope(Job() + Dispatchers.Main)
         GlobalScope.launch {
-            listRestaurant = BackendApiRestaurant.restaurantApi.getRestaurants().listRestaurant
-            activity?.runOnUiThread{
-                recyclerView.adapter = RecyclerAdapterRestaurant(listRestaurant!!, coroutineScope)
+            try {
+                listRestaurant = BackendApiRestaurant.restaurantApi.getRestaurants().listRestaurant
+                activity?.runOnUiThread{
+                    recyclerView.adapter = RecyclerAdapterRestaurant(listRestaurant!!, coroutineScope)
+                }
+            } catch (e :Exception){
+                activity?.runOnUiThread {
+                    Toast.makeText(requireContext(), e.message, Toast.LENGTH_LONG).show()
+                }
             }
+
         }
 
         return root
