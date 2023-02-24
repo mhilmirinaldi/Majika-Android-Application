@@ -15,6 +15,8 @@ Berikut merupakan library yang digunakan
 - CameraX
 
 ## cara penggunaan
+
+- pastikan versi Android Studio anda yang terbaru (teruji pada Android Studio Electric eel 2022.1.1)
 - jalankan executable backend yang dapat didownload pada [link berikut](https://drive.google.com/drive/u/1/folders/1AVrZUfIrDluISTemOAmy_jj4LQNTxuCb) dengan perintah pada command prompt
 
 ```./nama_executable_file```
@@ -46,7 +48,7 @@ dengan pembagian tugas sebagai berikut
 
 ## Screenshots
 
-<img src="./screenshot/twibbon.png" style="width:25%;height:25%;">
+<img src="./screenshot/twibbon.png" width="25%" height="25%">
 <img src="./screenshot/cabang_restoran.png" style="width:25%;height:25%;">
 <img src="./screenshot/daftar_menu.png" style="width:25%;height:25%;">
 <img src="./screenshot/keranjang.png" style="width:25%;height:25%;">
