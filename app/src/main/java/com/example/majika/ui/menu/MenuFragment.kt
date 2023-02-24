@@ -59,7 +59,8 @@ class MenuFragment : Fragment() {
         // Fetch data
         lifecycleScope.launch {
             try {
-                // Call API
+                // Refresh Keranjang and call API
+                repo.refreshKeranjang()     // refresh local keranjang from API
                 listItem = BackendApiItem.itemApi.getItems().listItem
 
                 // Update list item quantity from keranjang
