@@ -85,7 +85,8 @@
                 android:layout_marginLeft="14dp"
                 android:layout_marginTop="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="@id/cari_menu">
+                app:layout_constraintTop_toTopOf="@id/cari_menu"
+                app:layout_constraintEnd_toEndOf ="parent" >
 
             </androidx.recyclerview.widget.RecyclerView>
         </LinearLayout>
