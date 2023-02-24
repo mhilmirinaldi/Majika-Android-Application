@@ -7,9 +7,8 @@ import com.example.majika.domain.ItemKeranjang
 /**
  * Represent item keranjang entity in database
  */
-@Entity(tableName = "item_keranjang")
+@Entity(tableName = "item_keranjang", primaryKeys = arrayOf("name", "price", "currency"))
 data class ItemKeranjangInDB(
-    @PrimaryKey
     val name: String,
     val price: Float,
     val currency: String,

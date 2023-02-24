@@ -37,6 +37,7 @@ class MenuFragment : Fragment() {
     private var isMakananSelected = false
     private var isMinumanSelected = false
 
+    private var searchQuery:String? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -65,7 +66,7 @@ class MenuFragment : Fragment() {
                 // Update list item quantity from keranjang
                 viewModel.keranjang.value?.forEach {
                     for (i in 0 until listItem.size) {
-                        if (listItem[i].title == it.name) {
+                        if (listItem[i].title == it.name && listItem[i].price == it.price && listItem[i].currency == it.currency) {
                             listItem[i].quantity = it.quantity
                         }
                     }
@@ -84,26 +85,29 @@ class MenuFragment : Fragment() {
         viewModel.keranjang.observe(viewLifecycleOwner) {
             it.forEach {
                 if (isMakananSelected){
-                    for (i in 0 until filterListItems("Food").size) {
-                        if (filterListItems("Food")[i].title == it.name) {
-                            filterListItems("Food")[i].quantity = it.quantity
+                    var filterListItem = searchItems(searchQuery?:"")
+                    for (i in 0 until filterListItem.size) {
+                        if (filterListItem[i].title == it.name && filterListItem[i].price == it.price && filterListItem[i].currency == it.currency) {
+                            filterListItem[i].quantity = it.quantity
                         }
                     }
-                    adapter.updateItems(filterListItems("Food"))
+                    adapter.updateItems(filterListItem)
                 } else if (isMinumanSelected){
-                    for (i in 0 until filterListItems("Drink").size) {
-                        if (filterListItems("Drink")[i].title == it.name) {
-                            filterListItems("Drink")[i].quantity = it.quantity
+                    var filterListItem = searchItems(searchQuery?:"")
+                    for (i in 0 until filterListItem.size) {
+                        if (filterListItem[i].title == it.name && filterListItem[i].price == it.price && filterListItem[i].currency == it.currency) {
+                            filterListItem[i].quantity = it.quantity
                         }
                     }
-                    adapter.updateItems(filterListItems("Drink"))
+                    adapter.updateItems(filterListItem)
                 } else{
-                    for (i in 0 until filterListItems().size) {
-                        if (filterListItems()[i].title == it.name) {
-                            filterListItems()[i].quantity = it.quantity
+                    var filterListItem = searchItems(searchQuery?:"")
+                    for (i in 0 until filterListItem.size) {
+                        if (filterListItem[i].title == it.name && filterListItem[i].price == it.price && filterListItem[i].currency == it.currency) {
+                            filterListItem[i].quantity = it.quantity
                         }
                     }
-                    adapter.updateItems(filterListItems())
+                    adapter.updateItems(filterListItem)
                 }
 
             }
@@ -133,7 +137,9 @@ class MenuFragment : Fragment() {
         binding.cariMenu.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(p0: String?): Boolean {
                 if (p0 != null) {
-                    searchItems(p0.lowercase(Locale.getDefault()))
+                    var searchResult = searchItems(p0.lowercase(Locale.getDefault()))
+                    searchQuery = p0.lowercase(Locale.getDefault())
+                    adapter.updateItems(searchResult)
                 }
                 return true
             }
@@ -154,7 +160,7 @@ class MenuFragment : Fragment() {
         }
     }
 
-    private fun searchItems(query: String, filter: String? = null) {
+    private fun searchItems(query: String, filter: String? = null): List<Item> {
         val filteredList = if (isMakananSelected) {
             listItem.filter { it.type == "Food" && it.title.lowercase(Locale.getDefault()).contains(query) }
         } else if (isMinumanSelected){
@@ -163,7 +169,7 @@ class MenuFragment : Fragment() {
             listItem.filter { it.title.lowercase(Locale.getDefault()).contains(query) }
         }
 
-        adapter.updateItems(filteredList)
+        return filteredList
     }
 
     override fun onDestroyView() {
