@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/recycler_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <SearchView
+            android:id="@+id/cari_menu"
+            android:layout_width="215dp"
+            android:layout_height="28dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/btn_search"
+            android:iconifiedByDefault="false"
+            android:queryBackground="@android:color/transparent"
+            android:queryHint="@string/cari_menu"
+            android:textSize="11sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/LinearLayout">
+
+        </SearchView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/LinearLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="27dp"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_all"
+                    android:layout_width="128dp"
+                    android:layout_height="29dp"
+                    android:background="@drawable/btn_all"
+                    android:text="@string/all"
+                    android:textAllCaps="false"
+                    android:textColor="@color/item"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/btn_makanan"
+                    android:layout_width="128dp"
+                    android:layout_height="29dp"
+                    android:background="@drawable/btn_makanan"
+                    android:text="@string/makanan"
+                    android:textAllCaps="false"
+                    android:textColor="@color/item"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/btn_minuman"
+                    android:layout_width="128dp"
+                    android:layout_height="29dp"
+                    android:background="@drawable/btn_minuman"
+                    android:text="@string/minuman"
+                    android:textAllCaps="false"
+                    android:textColor="@color/item"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view_makanan"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="14dp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="@id/cari_menu">
+
+            </androidx.recyclerview.widget.RecyclerView>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
