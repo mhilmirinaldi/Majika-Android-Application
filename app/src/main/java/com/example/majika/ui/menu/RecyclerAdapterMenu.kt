@@ -61,6 +61,7 @@ class RecyclerAdapterMenu(private val repo: KeranjangRepository) : RecyclerView.
                 GlobalScope.launch {
                     repo.deleteItemInKeranjang(ItemKeranjang(name = item.title, currency = item.currency, price = item.price, quantity = 0))
                 }
+                holder.quantityView.text = ("0")
             }
         }
 
