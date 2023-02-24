@@ -14,6 +14,17 @@ Berikut merupakan library yang digunakan
 - Room
 - CameraX
 
+## cara penggunaan
+- jalankan executable backend yang dapat didownload pada [link berikut](https://drive.google.com/drive/u/1/folders/1AVrZUfIrDluISTemOAmy_jj4LQNTxuCb) dengan perintah pada command prompt
+
+```./nama_executable_file```
+
+- ubah server dan port pada file **BackendService.kt** yang terdapat pada directory **app/src/main/java/com/example/majika/network**
+
+```private const val BASE_URL = "http://192.168.1.3:8000"```
+
+- jalankan aplikasi dengan menggunakan Android Studio
+
 ## Contributor
 
 project ini dikerjakan oleh orang-orang berikut ini
