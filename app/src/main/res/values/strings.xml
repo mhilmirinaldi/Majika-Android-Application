@@ -16,5 +16,5 @@
     <string name="plus_btn">+</string>
     <string name="quantity">0</string>
     <string name="maps">Maps</string>
-    <string name="temperature">°C</string>
+    <string name="temperature">-°C</string>
 </resources>

@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -23,7 +24,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     private lateinit var sensorManager : SensorManager
     private var temperatureSensor : Sensor? = null
-    private lateinit var menu: Menu
+    private var menu: Menu? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +48,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         temperatureSensor = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)
-
+        if (temperatureSensor == null) {
+            Toast.makeText(this, "Sensor suhu tidak tersedia", Toast.LENGTH_LONG).show()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -60,12 +63,12 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-        if (event?.sensor?.type == Sensor.TYPE_AMBIENT_TEMPERATURE) {
+        if (menu != null && event?.sensor?.type == Sensor.TYPE_AMBIENT_TEMPERATURE) {
             val temperature = event.values[0]
 
             Log.d("MainActivity", "Temperature changed: $temperature")
 
-            val temperatureMenuItem = menu.findItem(R.id.action_temperature)
+            val temperatureMenuItem = menu!!.findItem(R.id.action_temperature)
             temperatureMenuItem.title = "${temperature}°C"
         }
     }

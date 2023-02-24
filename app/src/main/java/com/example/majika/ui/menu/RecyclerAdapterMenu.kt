@@ -52,24 +52,34 @@ class RecyclerAdapterMenu(private val repo: KeranjangRepository) : RecyclerView.
         holder.quantityView.text = item.quantity.toString()
 
         holder.minusButton.setOnClickListener{
-            if(item.quantity > 0){
-                item.quantity--
+            item.quantity--
+            if(item.quantity > 1){
+                GlobalScope.launch {
+                    repo.updateItemInKeranjang(ItemKeranjang(name = item.title, currency = item.currency, price = item.price, quantity = item.quantity))
+                }
                 holder.quantityView.text = item.quantity.toString()
+            } else if (item.quantity == 0) {
+                GlobalScope.launch {
+                    repo.deleteItemInKeranjang(ItemKeranjang(name = item.title, currency = item.currency, price = item.price, quantity = 0))
+                }
+            } else if (item.quantity < 0) {
+                item.quantity = 0
             }
+            holder.quantityView.text = item.quantity.toString()
         }
 
         holder.plusButton.setOnClickListener{
-            if (item.quantity == 0) {
+            item.quantity++
+            holder.quantityView.text = item.quantity.toString()
+            if (item.quantity == 1) {
                 GlobalScope.launch {
                     repo.addItemToKeranjang(ItemKeranjang(name = item.title, currency = item.currency, price = item.price, quantity = 1))
                 }
             } else {
                 GlobalScope.launch {
-                    repo.updateItemInKeranjang(ItemKeranjang(name = item.title, currency = item.currency, price = item.price, quantity = item.quantity + 1))
+                    repo.updateItemInKeranjang(ItemKeranjang(name = item.title, currency = item.currency, price = item.price, quantity = item.quantity))
                 }
             }
-            item.quantity++
-            holder.quantityView.text = item.quantity.toString()
         }
     }
 
